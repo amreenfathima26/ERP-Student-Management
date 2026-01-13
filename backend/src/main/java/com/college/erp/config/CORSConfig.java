@@ -18,23 +18,24 @@ public class CORSConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
+
         // Parse allowed origins
         String[] origins = allowedOrigins.split(",");
-        for (int i = 0; i < origins.length; i++) {
-            origins[i] = origins[i].trim();
+        for (String origin : origins) {
+            String trimmedOrigin = origin.trim();
+            if (!"*".equals(trimmedOrigin)) {
+                configuration.addAllowedOrigin(trimmedOrigin);
+            }
         }
-        configuration.setAllowedOrigins(Arrays.asList(origins));
-        
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
-
